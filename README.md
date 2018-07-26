@@ -15,3 +15,6 @@ and other settings.
 ```bash
 python rangetrouble.py
 ```
+
+# Example Output
+![Python3 example output](python3_loop_with_test.png)
