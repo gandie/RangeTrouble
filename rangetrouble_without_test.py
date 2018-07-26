@@ -22,15 +22,11 @@ listsizes = range(minsize, maxsize + stepsize, stepsize)
 evil_list = []
 
 
-def myTest(int_number):
-    return int_number % 2 == 0
-
-
 def badLoop():
     result = []
     for i in range(len(evil_list)):
         item = evil_list[i]
-        if myTest(item):
+        if item % 2 == 0:
             result.append(item)
     return result
 
@@ -38,25 +34,21 @@ def badLoop():
 def betterLoop():
     result = []
     for item in evil_list:
-        if myTest(item):
+        if item % 2 == 0:
             result.append(item)
     return result
 
 
 def comprehetionLoop():
-    return [item for item in evil_list if myTest(item)]
+    return [item for item in evil_list if item % 2 == 0]
 
 
 def generatorLoop():
     def myfilter(input_list):
         for item in input_list:
-            if myTest(item):
+            if item % 2 == 0:
                 yield item
     return list(myfilter(evil_list))
-
-
-def filterLoop():
-    return list(filter(myTest, evil_list))
 
 
 def filterLoop_lambda():
@@ -67,7 +59,6 @@ e_times = []
 b_times = []
 c_times = []
 g_times = []
-f_times = []
 fl_times = []
 
 for size in listsizes:
@@ -76,13 +67,11 @@ for size in listsizes:
     b = betterLoop()
     c = comprehetionLoop()
     g = generatorLoop()
-    f = filterLoop()
     fl = filterLoop_lambda()
 
     assert e == b, 'Results must be equal!'
     assert e == c, 'Results must be equal!'
     assert e == g, 'Results must be equal!'
-    assert e == f, 'Results must be equal!'
     assert e == fl, 'Results must be equal!'
 
     print('Bad loop with size %s' % size)
@@ -97,10 +86,6 @@ for size in listsizes:
     print('Generator Loop with size %s' % size)
     generator_time = timeit.timeit(generatorLoop, number=calls)
     g_times.append(generator_time)
-    print('Filter Loop with size %s' % size)
-    filter_time = timeit.timeit(filterLoop, number=calls)
-    f_times.append(filter_time)
-
     print('Filter Loop lambda with size %s' % size)
     filter_time_lambda = timeit.timeit(filterLoop_lambda, number=calls)
     fl_times.append(filter_time_lambda)
@@ -110,7 +95,6 @@ axes.plot(listsizes, e_times, label='range(len()) loop')
 axes.plot(listsizes, b_times, label='for item in loop')
 axes.plot(listsizes, c_times, label='List comprehention loop')
 axes.plot(listsizes, g_times, label='Generator loop')
-axes.plot(listsizes, f_times, label='filter() loop')
 axes.plot(listsizes, fl_times, label='filter() with lambda loop')
 biglabel = '''
 List size, random integers

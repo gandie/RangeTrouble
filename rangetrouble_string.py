@@ -8,7 +8,7 @@ import random
 random.seed(1701 + 4711)
 
 minsize = 100
-maxsize = 10000
+maxsize = 5000
 stepsize = 100
 calls = 1000
 
@@ -22,45 +22,42 @@ listsizes = range(minsize, maxsize + stepsize, stepsize)
 evil_list = []
 
 
-def myTest(int_number):
-    return int_number % 2 == 0
+def myOperation(somestring):
+    return somestring + ' aha.'
 
 
 def badLoop():
     result = []
     for i in range(len(evil_list)):
         item = evil_list[i]
-        if myTest(item):
-            result.append(item)
+        result.append(myOperation(item))
     return result
 
 
 def betterLoop():
     result = []
     for item in evil_list:
-        if myTest(item):
-            result.append(item)
+        result.append(myOperation(item))
     return result
 
 
 def comprehetionLoop():
-    return [item for item in evil_list if myTest(item)]
+    return [myOperation(item) for item in evil_list]
 
 
 def generatorLoop():
-    def myfilter(input_list):
+    def myOperator(input_list):
         for item in input_list:
-            if myTest(item):
-                yield item
-    return list(myfilter(evil_list))
+            yield myOperation(item)
+    return list(myOperator(evil_list))
 
 
 def filterLoop():
-    return list(filter(myTest, evil_list))
+    return list(map(myOperation, evil_list))
 
 
 def filterLoop_lambda():
-    return list(filter(lambda x: x % 2 == 0, evil_list))
+    return list(map(lambda x: x + ' aha.', evil_list))
 
 
 e_times = []
@@ -71,7 +68,8 @@ f_times = []
 fl_times = []
 
 for size in listsizes:
-    evil_list = [random.randint(0, 9) for _ in range(size)]
+    words = ['ham', 'eggs', 'foo', 'bar']
+    evil_list = [random.choice(words) for _ in range(size)]
     e = badLoop()
     b = betterLoop()
     c = comprehetionLoop()
@@ -110,12 +108,12 @@ axes.plot(listsizes, e_times, label='range(len()) loop')
 axes.plot(listsizes, b_times, label='for item in loop')
 axes.plot(listsizes, c_times, label='List comprehention loop')
 axes.plot(listsizes, g_times, label='Generator loop')
-axes.plot(listsizes, f_times, label='filter() loop')
-axes.plot(listsizes, fl_times, label='filter() with lambda loop')
+axes.plot(listsizes, f_times, label='map() loop')
+axes.plot(listsizes, fl_times, label='map() with lambda loop')
 biglabel = '''
-List size, random integers
+List size, random strings
 Stepsize is {stepsize}
-Filter items from list with i % 2 == 0
+add another string to each one from list
 '''.format(stepsize=stepsize)
 axes.set(xlabel=biglabel, ylabel='Time needed for %s calls [s]' % calls)
 axes.legend()
